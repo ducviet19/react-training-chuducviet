@@ -2,6 +2,24 @@ import React, { useState } from 'react';
 import Text from './Text'
 import Status from './Status'
 import InputText from "./InputText";
+import PropTypes from 'props-type';
+import todoStore from '../store/TodoStore';
+
+const propTypes  = {
+  content: PropTypes.string,
+  title: PropTypes.string,
+  status:  PropTypes.string,
+  updateData: PropTypes.func,
+  index: PropTypes.number
+}
+
+const defaultProps = {
+  content: 'default',
+  title: 'default',
+  status:  false,
+  updateData: () => console.log("default"),
+  index: 0
+}
 
 
 function Task(props) {
@@ -19,6 +37,7 @@ function Task(props) {
 
   const [isEditing, setIsEditing] = React.useState(false);
   const [inputValue, setInputValue] = React.useState({value : '' , index : 0});
+  const [newTask, setNewTask] = React.useState({task: ''})
 
   const getValue = (value, index) => {
     setInputValue({value: value, index: index});
@@ -26,14 +45,15 @@ function Task(props) {
 
   const saveData = () => {
     setIsEditing(false)
-    updateData(inputValue.value,inputValue.index)
+    if(inputValue.value) {todoStore.editTask(inputValue.value,inputValue.index)}
   }
+
+
 
 
 
   const showInputText = () => {
     
-    console.log(isEditing)
     if (isEditing) {
 
       return (
@@ -49,9 +69,10 @@ function Task(props) {
     else {
       return (
         <div onClick={() => {
-          setIsEditing(true)
+          // setIsEditing(true)
         }}> 
-          <Text isTitle content={title} />
+        <button onClick={() => setIsEditing(true)}>Edit</button>
+          <Text index={index}  isTitle content={title} />
           <Text content={content} />
         </div>
       )
@@ -59,15 +80,21 @@ function Task(props) {
   }
   return (
     <>
-
+    
+    
+   
       <li style={chooseStyle()}>
 
         {showInputText()}
-       <Status status={status} />
+        
+       <Status index={index}  status={status} />
       </li>
 
     </>
   )
 }
+
+Task.propTypes = propTypes;
+Task.defaultProps = defaultProps;
 
 export default Task;
