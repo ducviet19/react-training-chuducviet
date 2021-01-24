@@ -14,6 +14,7 @@ function Status(props) {
 
   const handleSubmit = () => {
     todoStore.changeStatusTask(changeStatus,props.index)
+    setTaskStatus(false)
 
   }
 
